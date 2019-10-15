@@ -23,7 +23,7 @@ func TestYAML_Reader(t *testing.T) {
 	}
 	defer f.Close()
 
-	l := MultiLoader(&TagLoader{}, &YAMLLoader{Reader: f})
+	l := NewMultiLoader(&TagLoader{}, &YAMLLoader{Reader: f})
 	s := &Server{}
 	if err := l.Load(s); err != nil {
 		t.Error(err)
@@ -49,7 +49,7 @@ func TestToml_Reader(t *testing.T) {
 	}
 	defer f.Close()
 
-	l := MultiLoader(&TagLoader{}, &TOMLLoader{Reader: f})
+	l := NewMultiLoader(&TagLoader{}, &TOMLLoader{Reader: f})
 	s := &Server{}
 	if err := l.Load(s); err != nil {
 		t.Error(err)
@@ -76,7 +76,7 @@ func TestJSON_Reader(t *testing.T) {
 	}
 	defer f.Close()
 
-	l := MultiLoader(&TagLoader{}, &JSONLoader{Reader: f})
+	l := NewMultiLoader(&TagLoader{}, &JSONLoader{Reader: f})
 	s := &Server{}
 	if err := l.Load(s); err != nil {
 		t.Error(err)

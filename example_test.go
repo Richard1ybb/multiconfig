@@ -50,7 +50,7 @@ func ExampleMultiLoader() {
 	f := &FlagLoader{}
 	e := &EnvironmentLoader{}
 
-	l := MultiLoader(f, e)
+	l := NewMultiLoader(f, e)
 
 	// Load configs into our s variable from the sources above
 	s := &ServerConfig{}

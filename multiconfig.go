@@ -55,17 +55,17 @@ func NewWithPath(path string) *DefaultLoader {
 	f := &FlagLoader{}
 
 	loaders = append(loaders, e, f)
-	loader := MultiLoader(loaders...)
+	loader := NewMultiLoader(loaders...)
 
 	d := &DefaultLoader{}
 	d.Loader = loader
-	d.Validator = MultiValidator(&RequiredValidator{})
+	d.Validator = NewMultiValidator(&RequiredValidator{})
 	return d
 }
 
 // New returns a new instance of DefaultLoader without any file loaders.
 func New() *DefaultLoader {
-	loader := MultiLoader(
+	loader := NewMultiLoader(
 		&TagLoader{},
 		&EnvironmentLoader{},
 		&FlagLoader{},
@@ -73,7 +73,7 @@ func New() *DefaultLoader {
 
 	d := &DefaultLoader{}
 	d.Loader = loader
-	d.Validator = MultiValidator(&RequiredValidator{})
+	d.Validator = NewMultiValidator(&RequiredValidator{})
 	return d
 }
 
