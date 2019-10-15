@@ -30,10 +30,42 @@ type DefaultLoader struct {
 	Validator
 }
 
+// NewWithPathAndEnvPrefix returns a new instance of Loader to read from the given
+// configuration file.
+func NewWithPathAndEnvPrefix(path, envPrefix string,) *DefaultLoader {
+	loaders := MultiLoader{}
+
+	// Read default values defined via tag fields "default"
+	loaders = append(loaders, &TagLoader{})
+
+	// Choose what while is passed
+	if strings.HasSuffix(path, "toml") {
+		loaders = append(loaders, &TOMLLoader{Path: path})
+	}
+
+	if strings.HasSuffix(path, "json") {
+		loaders = append(loaders, &JSONLoader{Path: path})
+	}
+
+	if strings.HasSuffix(path, "yml") || strings.HasSuffix(path, "yaml") {
+		loaders = append(loaders, &YAMLLoader{Path: path})
+	}
+
+	e := &EnvironmentLoader{Prefix:envPrefix}
+	f := &FlagLoader{EnvPrefix:envPrefix}
+
+	loaders = append(loaders, e, f)
+
+	d := &DefaultLoader{}
+	d.Loader = loaders
+	d.Validator = NewMultiValidator(&RequiredValidator{})
+	return d
+}
+
 // NewWithPath returns a new instance of Loader to read from the given
 // configuration file.
 func NewWithPath(path string) *DefaultLoader {
-	loaders := []Loader{}
+	loaders := MultiLoader{}
 
 	// Read default values defined via tag fields "default"
 	loaders = append(loaders, &TagLoader{})
@@ -55,10 +87,9 @@ func NewWithPath(path string) *DefaultLoader {
 	f := &FlagLoader{}
 
 	loaders = append(loaders, e, f)
-	loader := NewMultiLoader(loaders...)
 
 	d := &DefaultLoader{}
-	d.Loader = loader
+	d.Loader = loaders
 	d.Validator = NewMultiValidator(&RequiredValidator{})
 	return d
 }

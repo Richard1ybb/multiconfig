@@ -1,6 +1,7 @@
 package multiconfig
 
 import (
+	"os"
 	"testing"
 	"time"
 )
@@ -92,6 +93,23 @@ func TestLoad(t *testing.T) {
 	}
 
 	testStruct(t, s, getDefaultServer())
+}
+
+func TestLoadWithPassEnvPrefix(t *testing.T) {
+	if err := os.Setenv("FOOBAR_ID", "987654321"); err != nil {
+		t.Error(err)
+	}
+
+	m := NewWithPathAndEnvPrefix(testTOML, "FOOBAR")
+
+	s := new(Server)
+	if err := m.Load(s); err != nil {
+		t.Error(err)
+	}
+
+	expectedServer := getDefaultServer()
+	expectedServer.ID = 987654321
+	testStruct(t, s, expectedServer)
 }
 
 func TestDefaultLoader(t *testing.T) {
