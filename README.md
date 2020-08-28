@@ -21,7 +21,7 @@ Multiconfig is able to read configuration automatically based on the given struc
 ## Install
 
 ```bash
-go get github.com/koding/multiconfig
+go get github.com/jacexh/multiconfig
 ```
 
 ## Usage and Examples
