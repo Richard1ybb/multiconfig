@@ -1,6 +1,9 @@
 package multiconfig
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestValidators(t *testing.T) {
 	s := getDefaultServer()
@@ -47,4 +50,15 @@ func TestValidatorsCustomTag(t *testing.T) {
 	if err.Error() != errStr {
 		t.Fatalf("Err string is wrong: expected %s, got: %s", errStr, err.Error())
 	}
+}
+
+func TestSliceStruct(t *testing.T) {
+	s := getDefaultServer()
+	s.Threads = []Thread{{ID: 0}}
+
+	err := (&RequiredValidator{}).Validate(s)
+	if err == nil {
+		t.Fatal("thread id should be required")
+	}
+	fmt.Println(err.Error())
 }

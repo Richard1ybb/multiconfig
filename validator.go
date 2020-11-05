@@ -58,6 +58,32 @@ func (e *RequiredValidator) processField(fieldName string, field *structs.Field)
 				return err
 			}
 		}
+
+	case reflect.Slice:
+		val := reflect.ValueOf(field.Value())
+
+		for i := 0; i < val.Len(); i++ {
+			fieldName += fmt.Sprintf("[%d].", i)
+
+			switch {
+			case val.Index(i).Kind() == reflect.Ptr && val.Index(i).Elem().Type().Kind() == reflect.Struct:
+				for _, field := range structs.Fields(val.Index(i).Interface()) {
+					if err := e.processField(fieldName, field); err != nil {
+						return err
+					}
+				}
+
+			case val.Index(i).Kind() == reflect.Struct:
+				vp := reflect.New(val.Index(i).Type())
+				vp.Elem().Set(val.Index(i))
+				for _, field := range structs.Fields(vp.Interface()) {
+					if err := e.processField(fieldName, field); err != nil {
+						return err
+					}
+				}
+			}
+		}
+
 	default:
 		val := field.Tag(e.TagName)
 		if val != e.TagValue {

@@ -44,6 +44,30 @@ func (t *TagLoader) processField(tagName string, field *structs.Field) error {
 				return err
 			}
 		}
+
+	case reflect.Slice:
+		val := reflect.ValueOf(field.Value())
+		for i := 0; i < val.Len(); i++ {
+			switch {
+			case val.Index(i).Kind() == reflect.Ptr && val.Index(i).Elem().Type().Kind() == reflect.Struct: // []*Server
+				for _, field := range structs.Fields(val.Index(i).Interface()) {
+					if err := t.processField(tagName, field); err != nil {
+						return err
+					}
+				}
+
+			case val.Index(i).Kind() == reflect.Struct: // []Server
+				vp := reflect.New(val.Index(i).Type())
+				vp.Elem().Set(val.Index(i))
+				for _, field := range structs.Fields(vp.Interface()) {
+					if err := t.processField(tagName, field); err != nil {
+						return err
+					}
+				}
+				val.Index(i).Set(vp.Elem())
+			}
+		}
+
 	default:
 		defaultVal := field.Tag(t.DefaultTagName)
 		if defaultVal == "" {
