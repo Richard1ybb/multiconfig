@@ -1,6 +1,8 @@
 package multiconfig
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestDefaultValues(t *testing.T) {
 	m := &TagLoader{}
@@ -15,5 +17,21 @@ func TestDefaultValues(t *testing.T) {
 
 	if s.Postgres.DBName != getDefaultServer().Postgres.DBName {
 		t.Errorf("Postgres DBName value is wrong: %s, want: %s", s.Postgres.DBName, getDefaultServer().Postgres.DBName)
+	}
+}
+
+func TestNestedValues(t *testing.T) {
+	m := &TagLoader{}
+	s := &Server{
+		Name:    "hello",
+		Labels:  []int{0, 1},
+		Threads: []Thread{{}},
+	}
+	if err := m.Load(s); err != nil {
+		t.Error(err)
+	}
+
+	if s.Threads[0].Name != "foobar" {
+		t.Errorf("threads[0].name value is wrong: %s, want: %s", s.Threads[0].Name, "foobar")
 	}
 }

@@ -17,6 +17,7 @@ type (
 		Postgres   Postgres
 		unexported string
 		Interval   time.Duration
+		Threads    []Thread
 	}
 
 	// Postgres holds Postgresql database related configuration
@@ -32,6 +33,11 @@ type (
 	TaggedServer struct {
 		Name     string `required:"true"`
 		Postgres `structs:",flatten"`
+	}
+
+	Thread struct {
+		ID   int    `required:"true"`
+		Name string `default:"foobar"`
 	}
 )
 
