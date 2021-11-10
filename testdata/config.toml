@@ -10,3 +10,6 @@ Enabled           = true
 Port              = 5432
 Hosts             = ["192.168.2.1", "192.168.2.2", "192.168.2.3"]
 AvailabilityRatio = 8.23
+
+[Maps.Default.Request.Header]
+Context = "RequestValue"

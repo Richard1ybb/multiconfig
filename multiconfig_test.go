@@ -18,6 +18,15 @@ type (
 		unexported string
 		Interval   time.Duration
 		Threads    []Thread
+		Maps 		map[string]Request
+	}
+
+	Request struct {
+		Header Header
+	}
+
+	Header struct {
+		Context string
 	}
 
 	// Postgres holds Postgresql database related configuration

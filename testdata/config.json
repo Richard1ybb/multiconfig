@@ -20,5 +20,14 @@
       "192.168.2.3"
     ],
     "AvailabilityRatio": 8.23
+  },
+  "maps": {
+    "Default": {
+      "Request": {
+        "Header": {
+          "Context":"RequestValue"
+        }
+      }
+    }
   }
 }

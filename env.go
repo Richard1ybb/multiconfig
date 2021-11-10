@@ -3,6 +3,7 @@ package multiconfig
 import (
 	"fmt"
 	"os"
+	"reflect"
 	"sort"
 	"strings"
 
@@ -58,10 +59,12 @@ func (e *EnvironmentLoader) processField(prefix string, field *structs.Field, na
 	switch strctMap.(type) {
 	case map[string]interface{}:
 		for key, val := range strctMap.(map[string]interface{}) {
-			field := field.Field(key)
-
-			if err := e.processField(fieldName, field, key, val); err != nil {
-				return err
+			switch field.Kind() {
+			case reflect.Struct:
+				field := field.Field(key)
+				if err := e.processField(fieldName, field, key, val); err != nil {
+					return err
+				}
 			}
 		}
 	default:
